@@ -27,7 +27,7 @@ class CreateTable{
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 prep_time INT NOT NULL,
-                difficulty INT NOT NULL CHECK (difficulty >= 1 AND difficulty <= 3),
+                difficulty INT NOT NULL CHECK (difficulty BETWEEN 1 AND 3),
                 vegeterian BOOLEAN NOT NULL
             )
         ";
@@ -36,12 +36,12 @@ class CreateTable{
 
     function createRatingsTable(){
         $sql = "
-            CREATE TABLE IF NOT EXISTS ratings (
-                id SERIAL PRIMARY KEY,
-                recipe_id INT NOT NULL REFERENCES recipes(id),
-                rating INT NOT NULL CHECk (rating >=1 AND rating <= 5),
-                created_by INT NOT NULL REFERENCES users(id)
-            )
+            id SERIAL PRIMARY KEY,
+            recipe_id INT NOT NULL,
+            created_by INT,
+            rating INT CHECK (rating BETWEEN 1 AND 5),
+            FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
         ";
         $this->executeQuery($sql, 'ratings');
     }
