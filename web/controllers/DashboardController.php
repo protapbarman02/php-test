@@ -1,8 +1,10 @@
 <?php
 
-class DashboardController{
-    
-    function index(){
+class DashboardController
+{    
+    public function index()
+    {
+        header('Content-Type: application/json');
         echo json_encode([
             'status_code' => 200,
             'status' => 'success',

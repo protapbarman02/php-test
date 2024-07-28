@@ -1,14 +1,17 @@
 <?php
 
-class RecipeController {
+class RecipeController
+{
 
     private $recipeModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->recipeModel = new RecipeModel();
     }
 
-    public function list() {
+    public function list()
+    {
         $recipes = $this->recipeModel->list();
 
         header('Content-Type: application/json');
@@ -16,7 +19,8 @@ class RecipeController {
         exit;
     }
 
-    public function getById($id) {
+    public function getById($id)
+    {
         $recipe = $this->recipeModel->getById($id);
 
         header('Content-Type: application/json');
@@ -24,7 +28,8 @@ class RecipeController {
         exit;
     }
     
-    public function create(){
+    public function create()
+    {
         $recipe = json_decode(file_get_contents('php://input'), true);
         $result = $this->recipeModel->create($recipe);
 
@@ -33,7 +38,8 @@ class RecipeController {
         exit;
     }
 
-    public function update($id){
+    public function update($id)
+    {
         $recipe = $this->recipeModel->getById($id);
 
         if($recipe['status_code'] !== 200){
@@ -49,7 +55,8 @@ class RecipeController {
         echo json_encode($result);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $recipe = $this->recipeModel->getById($id);
 
         if($recipe['status_code'] !== 200){
@@ -64,7 +71,8 @@ class RecipeController {
         echo json_encode($result);
     }
     
-    public function search($q) {
+    public function search($q)
+    {
         $recipes = $this->recipeModel->search($q);
         header('Content-Type: application/json');
         echo json_encode($recipes);

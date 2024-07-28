@@ -1,17 +1,16 @@
 <?php
 
-class UserController {
+class UserController
+{
     private $userModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->userModel = new UsereModel();
     }
 
-    public function list() {
-        //handle search params
-        //$queryParams = $_GET;
-        //$queryParamsJson = json_encode($queryParams);
-
+    public function list()
+    {
         $users = $this->userModel->list();
         
         header('Content-Type: application/json');

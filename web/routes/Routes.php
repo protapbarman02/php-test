@@ -1,11 +1,12 @@
 <?php
 
-
-class Router{
+class Router
+{
 
     public $routes;
     
-    function __construct(){
+    function __construct()
+    {
         $this->routes = [
             'GET' => [
                 '/' => 'DashboardController:index',
@@ -31,10 +32,12 @@ class Router{
         ];    
     }
 
-    function handleRequest($uri,$method){
-        // header('Content-Type: application/json');
+    function handleRequest($uri,$method)
+    {
         $path = parse_url($uri, PHP_URL_PATH);
+
         if(!isset($this->routes[$method])){
+            header('Content-Type: application/json');
             echo json_encode([
                 'status_code' => 405,
                 'status' => 'error',
@@ -43,6 +46,7 @@ class Router{
             ]);
             return;
         }
+
         foreach ($this->routes[$method] as $route => $action) {
             $pattern = $this->convertRouteToPattern($route);
             if (preg_match($pattern, $path, $matches)) {
@@ -50,6 +54,8 @@ class Router{
                 return;
             }
         }
+
+        header('Content-Type: application/json');
         echo json_encode([
             'status_code' => 404,
             'status' => 'error',
@@ -59,13 +65,14 @@ class Router{
         return;
     }
 
-    protected function convertRouteToPattern($route){
+    protected function convertRouteToPattern($route)
+    {
         // Convert route to regex pattern
         return '#^' . preg_replace('/{[^\/]+}/', '([^\/]+)', $route) . '$#';
     }
 
-    protected function dispatch($action, $matches){
-
+    protected function dispatch($action, $matches)
+    {
         list($controllerName, $method) = explode(':', $action);
         $controller = new $controllerName();
 
@@ -73,8 +80,7 @@ class Router{
         $params = array_slice($matches, 1);
         if (method_exists($controller, $method)) {
             call_user_func_array([$controller, $method], $params);
-        } 
-        else {
+        } else {
             header('Content-Type: application/json');
             echo json_encode([
                 'status_code' => 500,

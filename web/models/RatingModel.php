@@ -1,13 +1,16 @@
 <?php
 
-class RatingModel{
+class RatingModel
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function create($data) {
+    public function create($data) 
+    {
         if (!isset($data['rating']) || ($data['rating']<1 || $data['rating']>5)) {
             return [
                 'status_code' => 501,
@@ -35,9 +38,7 @@ class RatingModel{
                 'data' => $rating['data']
             ];
 
-        }
-        catch(PDOException $e){
-            print_r($data);
+        } catch(PDOException $e){
             return [
                 'hello' => 'I am here',
                 'status_code' => 500,
@@ -48,7 +49,8 @@ class RatingModel{
         }
     }
 
-    public function getById($id) {
+    public function getById($id)
+    {
         try{
             $stmt = $this->db->prepare("SELECT * FROM ratings WHERE id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -61,8 +63,7 @@ class RatingModel{
                 'message' => 'ratings fetched successfully',
                 'data' => $recipe
             ];
-        }
-        catch(PDOException $e){
+        } catch(PDOException $e){
             return [
                 'status_code' => 500,
                 'status' => 'error', 
@@ -72,7 +73,8 @@ class RatingModel{
         }
     }
 
-    public function getByRecipeId($recipeId) {
+    public function getByRecipeId($recipeId)
+    {
         try{
             $stmt = $this->db->prepare("SELECT * FROM ratings WHERE recipe_id = :recipe_id");
             $stmt->bindParam(':recipe_id', $recipeId, PDO::PARAM_INT);
@@ -85,8 +87,7 @@ class RatingModel{
                 'message' => 'ratings fetched successfully',
                 'data' => $ratings
             ];
-        }
-        catch(PDOException $e){
+        } catch(PDOException $e){
             return [
                 'status_code' => 500,
                 'status' => 'error', 

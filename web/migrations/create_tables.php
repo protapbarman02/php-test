@@ -1,15 +1,19 @@
 <?php
+
 require_once __DIR__ . '/../utils/Database.php';
 
-class CreateTable{
+class CreateTable
+{
     
-    public $db;
+    private $db;
 
-    function __construct(){
+    private function __construct()
+    {
         $this->db = Database::getInstance()->getConnection();
     }
     
-    function createUsesrTable(){
+    private function createUsesrTable()
+    {
         $sql = "
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -18,10 +22,12 @@ class CreateTable{
                 roles TEXT[] NOT NULL
             )
         ";
+
         $this->executeQuery($sql, 'ratings');
     }
     
-    function createRecipesTable(){
+    private function createRecipesTable()
+    {
         $sql = "
             CREATE TABLE IF NOT EXISTS recipes (
                 id SERIAL PRIMARY KEY,
@@ -31,10 +37,12 @@ class CreateTable{
                 vegetarian BOOLEAN NOT NULL
             )
         ";
+
         $this->executeQuery($sql, 'ratings');
     }
 
-    function createRatingsTable(){
+    private function createRatingsTable()
+    {
         $sql = "
             id SERIAL PRIMARY KEY,
             recipe_id INT NOT NULL,
@@ -43,10 +51,12 @@ class CreateTable{
             FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
             FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
         ";
+
         $this->executeQuery($sql, 'ratings');
     }
 
-    function executeQuery($sql, $table) {
+    private function executeQuery($sql, $table)
+    {
         try {
             $this->db->exec($sql);
             echo "Table '$table' created successfully.\n";
@@ -55,7 +65,8 @@ class CreateTable{
         }
     }
 
-    function execute(){
+    public function execute()
+    {
         $this->createUsesrTable();
         $this->createRecipesTable();
         $this->createRatingsTable();

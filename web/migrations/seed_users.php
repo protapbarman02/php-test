@@ -2,14 +2,17 @@
 
 require_once __DIR__ . '/../utils/Database.php';
 
-class SeedUsers {
+class SeedUsers
+{
     public $db;
 
-    function __construct(){
+    public function __construct()
+    {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function run() {
+    public function run()
+    {
         $users = [
             ['email' => 'user1@test.com', 'password' => password_hash('password123', PASSWORD_DEFAULT), 'roles' => '{user}'],
             ['email' => 'user2@test.com', 'password' => password_hash('password123', PASSWORD_DEFAULT), 'roles' => '{admin,user}'],
@@ -23,7 +26,8 @@ class SeedUsers {
         }
     }
 
-    private function insertUser($user) {
+    private function insertUser($user)
+    {
         $stmt = $this->db->prepare("INSERT INTO users (email, password, roles) VALUES (:email, :password, :roles)");
         $stmt->execute($user);
     }
