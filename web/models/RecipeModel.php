@@ -1,35 +1,38 @@
 <?php
 
-class RecipeModel {
+class RecipeModel
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function list() {
-        try{
+    public function list()
+    {
+        try {
             $stmt = $this->db->prepare("SELECT * FROM recipes");
             $stmt->execute();
             return [
                 'status_code' => 200,
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => 'Successfully fetched Recipes',
                 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)
             ];
-        }
-        catch(PDOException $e){
+        } catch (PDOException $e) {
             return [
                 'status_code' => 500,
                 'status' => 'error',
-                'message' => 'Internal Server Error', 
+                'message' => 'Internal Server Error',
                 'data' => []
             ];
         }
     }
 
-    public function getById($id) {
-        try{
+    public function getById($id)
+    {
+        try {
             $stmt = $this->db->prepare("SELECT * FROM recipes WHERE id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -40,8 +43,8 @@ class RecipeModel {
             $status = 'success';
             $message = 'Successfully fetched Recipe';
             $data = $recipe;
-            
-            if($recipe === false){
+
+            if ($recipe === false) {
                 $status_code = 404;
                 $status = 'error';
                 $message = 'Recipe Not Found';
@@ -50,23 +53,23 @@ class RecipeModel {
 
             return [
                 'status_code' => $status_code,
-                'status' => $status, 
+                'status' => $status,
                 'message' => $message,
                 'data' => $data
             ];
-        }
-        catch(PDOException $e){
+        } catch (PDOException $e) {
             return [
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
             ];
         }
     }
 
-    public function create($data) {
-        if (!isset($data['difficulty']) || ($data['difficulty']<1 || $data['difficulty']>3)) {
+    public function create($data)
+    {
+        if (!isset($data['difficulty']) || ($data['difficulty'] < 1 || $data['difficulty'] > 3)) {
             return [
                 'status_code' => 501,
                 'status' => 'error',
@@ -75,7 +78,7 @@ class RecipeModel {
             ];
         }
 
-        try{
+        try {
             $stmt = $this->db->prepare(
                 "INSERT INTO recipes (name, prep_time, difficulty, vegetarian) VALUES (:name, :prep_time, :difficulty, :vegetarian)"
             );
@@ -85,14 +88,14 @@ class RecipeModel {
             $stmt->bindParam(':vegetarian', $data['vegetarian'], PDO::PARAM_BOOL);
             $stmt->execute();
 
-            
+
             $recipeId = $this->db->lastInsertId();
             $recipe = $this->getById($recipeId);
-            
+
             $message = 'Recipe Created Successfully';
             $data = $recipe['data'];
 
-            if( $recipe['status_code'] !== 200 ){
+            if ($recipe['status_code'] !== 200) {
                 $message = 'Recipe Created Successfully but failed to fetch the Recipe, do not worry';
                 $data = [];
             }
@@ -103,20 +106,20 @@ class RecipeModel {
                 'message' => $message,
                 'data' => $data
             ];
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             return [
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
             ];
         }
     }
 
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
 
-        if (!isset($data['difficulty']) || ($data['difficulty']<1 || $data['difficulty']>3)) {
+        if (!isset($data['difficulty']) || ($data['difficulty'] < 1 || $data['difficulty'] > 3)) {
             return [
                 'status_code' => 501,
                 'status' => 'error',
@@ -125,7 +128,7 @@ class RecipeModel {
             ];
         }
 
-        try{
+        try {
             $stmt = $this->db->prepare(
                 "UPDATE recipes 
                  SET name = :name, prep_time = :prep_time, difficulty = :difficulty, vegetarian = :vegetarian 
@@ -137,12 +140,12 @@ class RecipeModel {
             $stmt->bindParam(':vegetarian', $data['vegetarian'], PDO::PARAM_BOOL);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             $recipe = $this->getById($id);
 
             $message = 'Recipe Updated Successfully';
 
-            if( $recipe['status_code'] !== 200 ){
+            if ($recipe['status_code'] !== 200) {
                 $message = 'Recipe Updated Successfully but failed to fetch the Recipe, do not worry';
             }
 
@@ -155,15 +158,16 @@ class RecipeModel {
         } catch (PDOException $e) {
             return [
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
             ];
         }
     }
 
-    public function delete($id) {
-        try{
+    public function delete($id)
+    {
+        try {
             $stmt = $this->db->prepare("DELETE FROM recipes WHERE id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -171,19 +175,55 @@ class RecipeModel {
 
             return [
                 'status_code' => 200,
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => 'Successfully Deleted Recipe',
                 'data' => []
             ];
-        }
-        catch(PDOException $e){
+        } catch (PDOException $e) {
             return [
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
             ];
         }
     }
-        
+
+    public function search($q)
+    {
+        try {
+            $query = "SELECT * FROM recipes WHERE name ILIKE :searchTerm";
+            $stmt = $this->db->prepare($query);
+            $searchTerm = '%' . $q . '%';
+            $stmt->bindParam(':searchTerm', $searchTerm, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Fetch all results
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Check if no results are found
+            if (empty($results)) {
+                return [
+                    "status_code" => 200,
+                    "status" => "success",
+                    "message" => "No recipes found matching your search criteria",
+                    "data" => []
+                ];
+            } else {
+                return [
+                    'status_code' => 200,
+                    'status' => 'success',
+                    'message' => 'Recipes found',
+                    'data' => $results
+                ];
+            }
+        } catch (PDOException $e) {
+            return [
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Internal Server Error',
+                'data' => []
+            ];
+        }
+    }
 }

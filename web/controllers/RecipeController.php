@@ -58,10 +58,15 @@ class RecipeController {
             exit;
         }
 
-        $updated_recipe = json_decode(file_get_contents('php://input'), true);
         $result = $this->recipeModel->delete($id);
 
         header('Content-Type: application/json');
         echo json_encode($result);
+    }
+    
+    public function search($q) {
+        $recipes = $this->recipeModel->search($q);
+        header('Content-Type: application/json');
+        echo json_encode($recipes);
     }
 }

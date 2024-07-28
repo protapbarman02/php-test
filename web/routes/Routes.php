@@ -1,5 +1,6 @@
 <?php
 
+
 class Router{
 
     public $routes;
@@ -10,12 +11,13 @@ class Router{
                 '/' => 'DashboardController:index',
                 '/recipes' => 'RecipeController:list',
                 '/recipes/{id}' => 'RecipeController:getById',
+                '/users' => 'UserController:list',
+                '/recipes/{id}/ratings' => 'RatingController:getByRecipeId',
                 '/recipes/search/{q}' => 'RecipeController:search',
-                '/users' => 'UserController:list'
             ],
             'POST' => [
                 '/recipes' => 'RecipeController:create',
-                '/recipes/{id}/rating' => 'RecipeController:rate',
+                '/recipes/{id}/ratings' => 'RatingController:create',
             ],
             'PUT' => [
                 '/recipes/{id}' => 'RecipeController:update',
@@ -30,9 +32,9 @@ class Router{
     }
 
     function handleRequest($uri,$method){
+        // header('Content-Type: application/json');
         $path = parse_url($uri, PHP_URL_PATH);
         if(!isset($this->routes[$method])){
-            header('Content-Type: application/json');
             echo json_encode([
                 'status_code' => 405,
                 'status' => 'error',
@@ -56,14 +58,14 @@ class Router{
         ]);
         return;
     }
-    protected function convertRouteToPattern($route)
-    {
+
+    protected function convertRouteToPattern($route){
         // Convert route to regex pattern
-        return '#^' . preg_replace('/{id}/', '(\d+)', $route) . '$#';
+        return '#^' . preg_replace('/{[^\/]+}/', '([^\/]+)', $route) . '$#';
     }
 
-    protected function dispatch($action, $matches)
-    {
+    protected function dispatch($action, $matches){
+
         list($controllerName, $method) = explode(':', $action);
         $controller = new $controllerName();
 
@@ -71,7 +73,9 @@ class Router{
         $params = array_slice($matches, 1);
         if (method_exists($controller, $method)) {
             call_user_func_array([$controller, $method], $params);
-        } else {
+        } 
+        else {
+            header('Content-Type: application/json');
             echo json_encode([
                 'status_code' => 500,
                 'status' => 'error',
