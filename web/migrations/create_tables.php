@@ -28,7 +28,7 @@ class CreateTable{
                 name VARCHAR(255) NOT NULL,
                 prep_time INT NOT NULL,
                 difficulty INT NOT NULL CHECK (difficulty BETWEEN 1 AND 3),
-                vegeterian BOOLEAN NOT NULL
+                vegetarian BOOLEAN NOT NULL
             )
         ";
         $this->executeQuery($sql, 'ratings');

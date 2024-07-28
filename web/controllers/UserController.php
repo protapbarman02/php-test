@@ -12,7 +12,7 @@ class UserController {
         //$queryParams = $_GET;
         //$queryParamsJson = json_encode($queryParams);
 
-        $users = $this->userModel->getAll();
+        $users = $this->userModel->list();
         
         header('Content-Type: application/json');
         echo json_encode([

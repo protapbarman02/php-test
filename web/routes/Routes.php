@@ -9,7 +9,8 @@ class Router{
             'GET' => [
                 '/' => 'DashboardController:index',
                 '/recipes' => 'RecipeController:list',
-                '/recipes/{id}' => 'RecipeController:get',
+                '/recipes/{id}' => 'RecipeController:getById',
+                '/recipes/search/{q}' => 'RecipeController:search',
                 '/users' => 'UserController:list'
             ],
             'POST' => [
@@ -19,22 +20,26 @@ class Router{
             'PUT' => [
                 '/recipes/{id}' => 'RecipeController:update',
             ],
+            'PATCH' => [
+                '/recipes/{id}' => 'RecipeController:update',
+            ],
             'DELETE' => [
                 '/recipes/{id}' => 'RecipeController:delete',
             ],
         ];    
     }
 
-    function extractURL(){
-
-    }
-
     function handleRequest($uri,$method){
         $path = parse_url($uri, PHP_URL_PATH);
         if(!isset($this->routes[$method])){
-            echo "Error";
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status_code' => 405,
+                'status' => 'error',
+                'message' => 'Method Not Supported',
+                'data' => []
+            ]);
             return;
-            //return standard error json
         }
         foreach ($this->routes[$method] as $route => $action) {
             $pattern = $this->convertRouteToPattern($route);
@@ -43,6 +48,13 @@ class Router{
                 return;
             }
         }
+        echo json_encode([
+            'status_code' => 404,
+            'status' => 'error',
+            'message' => 'Not Found',
+            'data' => []
+        ]);
+        return;
     }
     protected function convertRouteToPattern($route)
     {
@@ -60,9 +72,13 @@ class Router{
         if (method_exists($controller, $method)) {
             call_user_func_array([$controller, $method], $params);
         } else {
-            echo "Error";
+            echo json_encode([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Server Error',
+                'data' => []
+            ]);
             return;
-            //return standard error json
         }
     }
 }

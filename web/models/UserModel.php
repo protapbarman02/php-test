@@ -7,7 +7,7 @@ class UsereModel {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll() {
+    public function list() {
         $stmt = $this->db->prepare("SELECT * FROM users");
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
