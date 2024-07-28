@@ -1,108 +1,164 @@
-# PHP Developer Test
+# Setup procedure
 
-Hello and thanks for taking the time to try this out.
+This repository contains a PHP application that was given as a Assesment from KSYTCH that runs inside a Docker container. Follow the instructions below to set up and run the application on your local machine.
 
-The goal of this test is to assert (to some degree) your coding and architectural skills. You're given a simple problem so you can focus on showcasing development techniques. We encourage you to overengineer the solution to show off what you can do - assume you're building a production-ready application that other developers will need to work on and add to over time.
+## Prerequisites
 
-You're **allowed and encouraged** to use third party libraries, as long as you put them together yourself **without relying on a framework or microframework** to do it for you. An effective developer knows what to build and what to reuse, but also how his/her tools work. Be prepared to answer some questions about those libraries, like why you chose them and what other alternatives you're familiar with.
+- [Docker](https://www.docker.com/products/docker)
+- [Git](https://git-scm.com/downloads)
 
-As this is a code review process, please avoid adding generated code to the project. This makes our jobs as reviewers more difficult, as we can't review code you didn't write. This means avoiding libraries like _Propel ORM_, which generates thousands of lines of code in stub files.
+## Getting Started
 
+### Case 1: Cloning the Repository
 
-## Prerequsites
+1. Clone the repository to your local machine:
 
-We use [Docker](https://www.docker.com/products/docker) to administer this test. This ensures that we get an identical result to you when we test your application out, and it also matches our internal development workflows. If you don't have it already, you'll need Docker installed on your machine. **The application MUST run in the Docker containers** - if it doesn't we cannot accept your submission. You **MAY** edit the containers or add additional ones if you like (or completely re-do everything), but this **MUST** be clearly documented.
+    ```bash
+    git clone https://github.com/your-username/your-php-app.git
+    cd your-php-app
+    ```
 
-We have provided some containers to help build your application in PHP with a variety of persistence layers available to use. (you may start from scratch if you like)
+2. Build and start the Docker containers:
 
-### Technology
+    ```bash
+    docker-compose up --build
+    ```
 
-- Valid PHP 7.1 or newer
-- Persist data to either Postgres, Mysql (add yourself), Redis, or MongoDB (in the provided containers).
-    - Postgres connection details:
-        - host: `postgres`
-        - port: `5432`
-        - dbname: `hellofresh`
-        - username: `hellofresh`
-        - password: `hellofresh`
-    - Redis connection details:
-        - host: `redis`
-        - port: `6379`
-    - MongoDB connection details:
-        - host: `mongodb`
-        - port: `27017`
-- Use the provided `docker-compose.yml` file in the root of this repository. You are free to add more containers to this if you like.
+### Case 2: Using the ZIP File
 
-## Instructions
+1. Download the ZIP file of the project and extract it to your local machine.
 
-1. Create a Git Repository and add these files
-- Run `docker-compose up -d` to start the development environment.
-- Visit `http://localhost` to see the contents of the web container and develop your application.
-- Add all code changes to the git repository
-- Zip all completed files (with the git repository files) and email back to us.
+2. Navigate to the project directory:
 
-## Requirements
+    ```bash
+    cd path/to/extracted-folder
+    ```
 
-We'd like you to build a simple Recipes API. The API **MUST** conform to REST practices and **MUST** provide the following functionality:
+3. Build and start the Docker containers:
 
-- List, create, read, update, and delete Recipes
-- Search recipes
-- Rate recipes
+    ```bash
+    docker-compose up --build
+    ```
 
-### Endpoints
+## Accessing the API
 
-Your application **MUST** conform to the following endpoint structure and return the HTTP status codes appropriate to each operation. Endpoints specified as protected below **SHOULD** require authentication to view. The method of authentication is up to you.
+Once the containers are up and running, you can access the APIs using the following endpoints.
 
-##### Recipes
+### API Documentation
 
-| Name   | Method      | URL                    | Protected |
-| ---    | ---         | ---                    | ---       |
-| List   | `GET`       | `/recipes`             | ✘         |
-| Create | `POST`      | `/recipes`             | ✓         |
-| Get    | `GET`       | `/recipes/{id}`        | ✘         |
-| Update | `PUT/PATCH` | `/recipes/{id}`        | ✓         |
-| Delete | `DELETE`    | `/recipes/{id}`        | ✓         |
-| Rate   | `POST`      | `/recipes/{id}/rating` | ✘         |
+#### List Recipes
 
-An endpoint for recipe search functionality **MUST** also be implemented. The HTTP method and endpoint for this **MUST** be clearly documented.
+- **URL:** `/recipes`
+- **Method:** `GET`
+- **Description:** Retrieve a list of recipes.
+- **Protected:** No
+- **Request:**
 
-### Schema
+    ```http
+    GET /recipes HTTP/1.1
+    Host: localhost
+    ```
 
-- **Recipe**
-    - Unique ID
-    - Name
-    - Prep time
-    - Difficulty (1-3)
-    - Vegetarian (boolean)
+- **Response:**
 
-Additionally, recipes can be rated many times from 1-5 and a rating is never overwritten.
+    ```json
 
-If you need a more visual idea of how the data should be represented, [take a look at one of our recipe cards](https://ddw4dkk7s1lkt.cloudfront.net/card/hdp-chicken-with-farro-75b306ff.pdf?t=20160927003916).
+    ```
 
-## Evaluation criteria
+#### Create Recipe
 
-These are some aspects we pay particular attention to:
+- **URL:** `/recipes`
+- **Method:** `POST`
+- **Description:** Create a new recipe.
+- **Protected:** Yes
+- **Request:**
 
-- You **MUST** use packages, but you **MUST NOT** use a web-app framework or microframework. That is, you can use [symfony/dependency-injection](https://packagist.org/packages/symfony/dependency-injection) but not [symfony/symfony](https://packagist.org/packages/symfony/symfony).
-- Your application **MUST** run within the containers. Please provide short setup instructions.
-- The API **MUST** return valid JSON and **MUST** follow the endpoints set out above.
-- You **MUST** write testable code and demonstrate unit testing it (for clarity,  PHPUnit is not considered a framework as per the first point above. We encourage you to use PHPUnit or any other kind of **testing** framework).
-- You **SHOULD** pay attention to best security practices.
-- You **SHOULD** follow SOLID principles where appropriate.
-- You do **NOT** have to build a UI for this API.
+    ```http
+    POST /recipes HTTP/1.1
+    Host: localhost
+    Content-Type: application/json
+    ```
 
-The following earn you bonus points:
+- **Response:**
 
-- Your answers during code review
-- An informative, detailed description in the PR
-- Setup with a one liner or a script
-- Content negotiation
-- Pagination
-- Using any kind of Database Access Abstraction
-- Other types of testing - e.g. integration tests
-- Following the industry standard style guide for the language you choose to use - `PSR-2` etc.
-- A git history (even if brief) with clear, concise commit messages.
+    ```json
 
----
+    ```
 
-Good luck!
+#### Get Recipe
+
+- **URL:** `/recipes/{id}`
+- **Method:** `GET`
+- **Description:** Retrieve a specific recipe by ID.
+- **Protected:** No
+- **Request:**
+
+    ```http
+    GET /recipes/{id} HTTP/1.1
+    Host: localhost
+    ```
+
+- **Response:**
+
+    ```json
+
+    ```
+
+#### Update Recipe
+
+- **URL:** `/recipes/{id}`
+- **Method:** `PUT` or `PATCH`
+- **Description:** Update an existing recipe by ID.
+- **Protected:** Yes
+- **Request:**
+
+    ```http
+    PUT /recipes/{id} HTTP/1.1
+    Host: localhost
+    Content-Type: application/json
+    ```
+
+- **Response:**
+
+    ```json
+
+    ```
+
+#### Delete Recipe
+
+- **URL:** `/recipes/{id}`
+- **Method:** `DELETE`
+- **Description:** Delete a recipe by ID.
+- **Protected:** Yes
+- **Request:**
+
+    ```http
+    DELETE /recipes/{id} HTTP/1.1
+    Host: localhost
+    ```
+
+- **Response:**
+
+    ```json
+
+    ```
+
+#### Rate Recipe
+
+- **URL:** `/recipes/{id}/rating`
+- **Method:** `POST`
+- **Description:** Rate a specific recipe.
+- **Protected:** No
+- **Request:**
+
+    ```http
+    POST /recipes/{id}/rating HTTP/1.1
+    Host: localhost
+    Content-Type: application/json
+    ```
+
+- **Response:**
+
+    ```json
+    
+    ```
