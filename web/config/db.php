@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "host" => "postgres-container",
+    "host" => "db",
     "db" => "hellofresh",
     "username" => "hellofresh",
     "password" => "hellofresh"

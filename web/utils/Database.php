@@ -5,7 +5,7 @@ class Database{
     public static $instance = null;
 
     function __construct(){
-        $config = require_once '../config/db.php';
+        $config = require_once __DIR__.'/../config/db.php';
         $this->connection = new PDO(
             "pgsql:host={$config['host']};dbname={$config['db']}",
             $config['username'],
