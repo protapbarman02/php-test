@@ -9,9 +9,9 @@ class RatingModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function create($data) 
+    public function create($data)
     {
-        if (!isset($data['rating']) || ($data['rating']<1 || $data['rating']>5)) {
+        if (!isset($data['rating']) || ($data['rating'] < 1 || $data['rating'] > 5)) {
             return [
                 'status_code' => 501,
                 'status' => 'error',
@@ -20,14 +20,15 @@ class RatingModel
             ];
         }
 
-        try{
+        try {
             $stmt = $this->db->prepare(
-                "INSERT INTO ratings (recipe_id, rating) VALUES (:recipe_id, :rating)"
+                "INSERT INTO ratings (recipe_id, rating, created_by) VALUES (:recipe_id, :rating, :created_by)"
             );
             $stmt->bindParam(':recipe_id', $data['recipe_id'], PDO::PARAM_INT);
             $stmt->bindParam(':rating', $data['rating'], PDO::PARAM_INT);
+            $stmt->bindParam(':created_by', $data['created_by'], PDO::PARAM_INT);
             $stmt->execute();
-            
+
             $ratingId = $this->db->lastInsertId();
             $rating = $this->getById($ratingId);
 
@@ -37,12 +38,11 @@ class RatingModel
                 'message' => 'Sucessfully Rated',
                 'data' => $rating['data']
             ];
-
-        } catch(PDOException $e){
+        } catch (PDOException $e) {
             return [
                 'hello' => 'I am here',
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => $e->getMessage(),
                 'data' => ''
             ];
@@ -51,7 +51,7 @@ class RatingModel
 
     public function getById($id)
     {
-        try{
+        try {
             $stmt = $this->db->prepare("SELECT * FROM ratings WHERE id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -59,14 +59,14 @@ class RatingModel
 
             return [
                 'status_code' => 200,
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => 'ratings fetched successfully',
                 'data' => $recipe
             ];
-        } catch(PDOException $e){
+        } catch (PDOException $e) {
             return [
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
             ];
@@ -75,7 +75,7 @@ class RatingModel
 
     public function getByRecipeId($recipeId)
     {
-        try{
+        try {
             $stmt = $this->db->prepare("SELECT * FROM ratings WHERE recipe_id = :recipe_id");
             $stmt->bindParam(':recipe_id', $recipeId, PDO::PARAM_INT);
             $stmt->execute();
@@ -83,17 +83,38 @@ class RatingModel
 
             return [
                 'status_code' => 200,
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => 'ratings fetched successfully',
                 'data' => $ratings
             ];
-        } catch(PDOException $e){
+        } catch (PDOException $e) {
             return [
                 'status_code' => 500,
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
             ];
+        }
+    }
+
+    public function isUniqueRating($recipe_id, $created_by)
+    {
+        $sql = 'SELECT COUNT(*) AS count
+        FROM ratings
+        WHERE created_by = :created_by AND recipe_id = :recipe_id';
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':created_by', $created_by, PDO::PARAM_INT);
+        $stmt->bindParam(':recipe_id', $recipe_id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result['count'] > 0) {
+            return false;
+        } else {
+            return true;
         }
     }
 }

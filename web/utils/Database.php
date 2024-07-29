@@ -9,12 +9,16 @@ class Database
     function __construct()
     {
         $config = require_once __DIR__.'/../config/db.php';
-        $this->connection = new PDO(
-            "pgsql:host={$config['host']};dbname={$config['db']}",
-            $config['username'],
-            $config['password']
-        );
-        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        try{
+            $this->connection = new PDO(
+                "pgsql:host={$config['host']};dbname={$config['db']}",
+                $config['username'],
+                $config['password']
+            );
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $error){
+            echo "PDOException occured";
+        }
     }
 
     static function getInstance()

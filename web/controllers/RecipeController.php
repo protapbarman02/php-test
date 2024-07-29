@@ -4,11 +4,13 @@ class RecipeController
 {
     private $recipeModel;
     private $ratingModel;
+    private $auth;
 
     public function __construct()
     {
         $this->recipeModel = new RecipeModel();
         $this->ratingModel = new RatingModel();
+        $this->auth = new Auth();
     }
 
     public function list()
@@ -43,6 +45,9 @@ class RecipeController
 
     public function create()
     {
+        $this->auth->loginRequired();
+        $this->auth->roleRequired(['admin']);
+
         $recipe = json_decode(file_get_contents('php://input'), true);
         $result = $this->recipeModel->create($recipe);
 
@@ -53,6 +58,9 @@ class RecipeController
 
     public function update($id)
     {
+        $this->auth->loginRequired();
+        $this->auth->roleRequired(['admin']);
+
         $recipe = $this->recipeModel->getById($id);
 
         if ($recipe['status_code'] !== 200) {
@@ -70,6 +78,9 @@ class RecipeController
 
     public function delete($id)
     {
+        $this->auth->loginRequired();
+        $this->auth->roleRequired(['admin']);
+        
         $recipe = $this->recipeModel->getById($id);
 
         if ($recipe['status_code'] !== 200) {

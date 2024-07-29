@@ -15,10 +15,12 @@ class Router
                 '/users' => 'UserController:list',
                 '/recipes/{id}/ratings' => 'RatingController:getByRecipeId',
                 '/recipes/search/{q}' => 'RecipeController:search',
+                '/auth/logout' => 'AuthController:logout'
             ],
             'POST' => [
                 '/recipes' => 'RecipeController:create',
                 '/recipes/{id}/ratings' => 'RatingController:create',
+                '/auth/login' => 'AuthController:login',
             ],
             'PUT' => [
                 '/recipes/{id}' => 'RecipeController:update',
