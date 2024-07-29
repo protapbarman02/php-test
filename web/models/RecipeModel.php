@@ -9,16 +9,36 @@ class RecipeModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function list()
+    public function list($limit, $offset, $search = '')
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM recipes");
+            $sql = "SELECT * FROM recipes";
+            if (!empty($search)) {
+                $sql .= " WHERE name LIKE :search";
+            }
+            $sql .= " LIMIT :limit OFFSET :offset";
+
+            $stmt = $this->db->prepare($sql);
+            if (!empty($search)) {
+                $searchParam = "%$search%";
+                $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+            }
+
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
+
+            $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($recipes as &$recipe) {
+                $recipe['url'] = SERVER_PATH . 'recipes/' . $recipe['id'];
+            }
+
             return [
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Successfully fetched Recipes',
-                'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+                'data' => $recipes
             ];
         } catch (PDOException $e) {
             return [
@@ -27,6 +47,27 @@ class RecipeModel
                 'message' => 'Internal Server Error',
                 'data' => []
             ];
+        }
+    }
+
+    public function getTotalCount($search = '')
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM recipes";
+            if (!empty($search)) {
+                $sql .= " WHERE name LIKE :search";
+            }
+
+            $stmt = $this->db->prepare($sql);
+            if (!empty($search)) {
+                $searchParam = "%$search%";
+                $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+            }
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            return 0;
         }
     }
 
@@ -185,44 +226,6 @@ class RecipeModel
                 'status' => 'error',
                 'message' => 'Internal Server Error',
                 'data' => ''
-            ];
-        }
-    }
-
-    public function search($q)
-    {
-        try {
-            $query = "SELECT * FROM recipes WHERE name ILIKE :searchTerm";
-            $stmt = $this->db->prepare($query);
-            $searchTerm = '%' . $q . '%';
-            $stmt->bindParam(':searchTerm', $searchTerm, PDO::PARAM_STR);
-            $stmt->execute();
-
-            // Fetch all results
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Check if no results are found
-            if (empty($results)) {
-                return [
-                    "status_code" => 200,
-                    "status" => "success",
-                    "message" => "No recipes found matching your search criteria",
-                    "data" => []
-                ];
-            } else {
-                return [
-                    'status_code' => 200,
-                    'status' => 'success',
-                    'message' => 'Recipes found',
-                    'data' => $results
-                ];
-            }
-        } catch (PDOException $e) {
-            return [
-                'status_code' => 500,
-                'status' => 'error',
-                'message' => 'Internal Server Error',
-                'data' => []
             ];
         }
     }

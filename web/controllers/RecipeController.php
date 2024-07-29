@@ -15,7 +15,13 @@ class RecipeController
 
     public function list()
     {
-        $recipes = $this->recipeModel->list();
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        $offset = ($page - 1) * $limit;
+
+        $recipes = $this->recipeModel->list($limit, $offset, $search);
+        $totalCount = $this->recipeModel->getTotalCount($search);
 
         $updatedData = [];
 
@@ -24,12 +30,31 @@ class RecipeController
             $recipe['ratings'] = $ratings['data'];
             $updatedData[] = $recipe;
         }
-        $recipes['data'] = $updatedData;
+
+        $totalPages = ceil($totalCount / $limit);
+        $prevPage = $page > 1 ? "http://localhost/recipes?limit={$limit}&page=" . ($page - 1) . "&search={$search}" : null;
+        $nextPage = $page < $totalPages ? "http://localhost/recipes?limit={$limit}&page=" . ($page + 1) . "&search={$search}" : null;   
+
+        $response = [
+            'status' => 'success',
+            'status_code' => 200,
+            'message' => 'Successfully fetched Recipes',
+            'data' => [
+                'recipes' => $updatedData,
+                'limit' => $limit,
+                'total' => $totalCount,
+                'total_page' => $totalPages,
+                'current_page' => $page,
+                'prev_page' => $prevPage,
+                'next_page' => $nextPage
+            ]
+        ];
 
         header('Content-Type: application/json');
-        echo json_encode($recipes);
+        echo json_encode($response);
         exit;
     }
+
 
     public function getById($id)
     {
@@ -80,7 +105,7 @@ class RecipeController
     {
         $this->auth->loginRequired();
         $this->auth->roleRequired(['admin']);
-        
+
         $recipe = $this->recipeModel->getById($id);
 
         if ($recipe['status_code'] !== 200) {
@@ -93,22 +118,5 @@ class RecipeController
 
         header('Content-Type: application/json');
         echo json_encode($result);
-    }
-
-    public function search($q)
-    {
-        $recipes = $this->recipeModel->search($q);
-
-        $updatedData = [];
-
-        foreach ($recipes['data'] as $recipe) {
-            $ratings = $this->ratingModel->getByRecipeId($recipe['id']);
-            $recipe['ratings'] = $ratings['data'];
-            $updatedData[] = $recipe;
-        }
-        $recipes['data'] = $updatedData;
-
-        header('Content-Type: application/json');
-        echo json_encode($recipes);
     }
 }

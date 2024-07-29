@@ -14,7 +14,6 @@ class Router
                 '/recipes/{id}' => 'RecipeController:getById',
                 '/users' => 'UserController:list',
                 '/recipes/{id}/ratings' => 'RatingController:getByRecipeId',
-                '/recipes/search/{q}' => 'RecipeController:search',
                 '/auth/logout' => 'AuthController:logout'
             ],
             'POST' => [
