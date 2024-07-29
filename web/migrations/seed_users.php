@@ -28,8 +28,18 @@ class SeedUsers
 
     private function insertUser($user)
     {
-        $stmt = $this->db->prepare("INSERT INTO users (email, password, roles) VALUES (:email, :password, :roles)");
-        $stmt->execute($user);
+         // Check if user already exists
+         $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
+         $stmt->execute(['email' => $user['email']]);
+         $exists = $stmt->fetchColumn();
+ 
+         if (!$exists) {
+            // User does not exist, so insert it
+            $stmt = $this->db->prepare("INSERT INTO users (email, password, roles) VALUES (:email, :password, :roles)");
+            $stmt->execute($user);
+         } else {
+             echo "User with email {$user['email']} already seeded.\n";
+         }
     }
 }
 

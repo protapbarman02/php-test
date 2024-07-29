@@ -2,17 +2,27 @@
 
 class RecipeController
 {
-
     private $recipeModel;
+    private $ratingModel;
 
     public function __construct()
     {
         $this->recipeModel = new RecipeModel();
+        $this->ratingModel = new RatingModel();
     }
 
     public function list()
     {
         $recipes = $this->recipeModel->list();
+
+        $updatedData = [];
+
+        foreach ($recipes['data'] as $recipe) {
+            $ratings = $this->ratingModel->getByRecipeId($recipe['id']);
+            $recipe['ratings'] = $ratings['data'];
+            $updatedData[] = $recipe;
+        }
+        $recipes['data'] = $updatedData;
 
         header('Content-Type: application/json');
         echo json_encode($recipes);
@@ -23,11 +33,14 @@ class RecipeController
     {
         $recipe = $this->recipeModel->getById($id);
 
+        $ratings = $this->ratingModel->getByRecipeId($recipe['data']['id']);
+        $recipe['data']['ratings'] = $ratings['data'];
+
         header('Content-Type: application/json');
         echo json_encode($recipe);
         exit;
     }
-    
+
     public function create()
     {
         $recipe = json_decode(file_get_contents('php://input'), true);
@@ -42,7 +55,7 @@ class RecipeController
     {
         $recipe = $this->recipeModel->getById($id);
 
-        if($recipe['status_code'] !== 200){
+        if ($recipe['status_code'] !== 200) {
             header('Content-Type: application/json');
             echo json_encode($recipe);
             exit;
@@ -59,7 +72,7 @@ class RecipeController
     {
         $recipe = $this->recipeModel->getById($id);
 
-        if($recipe['status_code'] !== 200){
+        if ($recipe['status_code'] !== 200) {
             header('Content-Type: application/json');
             echo json_encode($recipe);
             exit;
@@ -70,10 +83,20 @@ class RecipeController
         header('Content-Type: application/json');
         echo json_encode($result);
     }
-    
+
     public function search($q)
     {
         $recipes = $this->recipeModel->search($q);
+
+        $updatedData = [];
+
+        foreach ($recipes['data'] as $recipe) {
+            $ratings = $this->ratingModel->getByRecipeId($recipe['id']);
+            $recipe['ratings'] = $ratings['data'];
+            $updatedData[] = $recipe;
+        }
+        $recipes['data'] = $updatedData;
+
         header('Content-Type: application/json');
         echo json_encode($recipes);
     }

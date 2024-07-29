@@ -7,7 +7,7 @@ class CreateTable
     
     private $db;
 
-    private function __construct()
+    public function __construct()
     {
         $this->db = Database::getInstance()->getConnection();
     }
@@ -23,7 +23,7 @@ class CreateTable
             )
         ";
 
-        $this->executeQuery($sql, 'ratings');
+        $this->executeQuery($sql, 'users');
     }
     
     private function createRecipesTable()
@@ -38,18 +38,20 @@ class CreateTable
             )
         ";
 
-        $this->executeQuery($sql, 'ratings');
+        $this->executeQuery($sql, 'recipes');
     }
 
     private function createRatingsTable()
     {
         $sql = "
-            id SERIAL PRIMARY KEY,
-            recipe_id INT NOT NULL,
-            created_by INT,
-            rating INT CHECK (rating BETWEEN 1 AND 5),
-            FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+            CREATE TABLE IF NOT EXISTS recipes (
+                id SERIAL PRIMARY KEY,
+                recipe_id INT NOT NULL,
+                created_by INT,
+                rating INT CHECK (rating BETWEEN 1 AND 5),
+                FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+                FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+            )
         ";
 
         $this->executeQuery($sql, 'ratings');
