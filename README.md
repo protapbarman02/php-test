@@ -15,7 +15,7 @@ This repository contains a PHP application that was given as a Assesment from KS
 
     ```bash
     git clone https://github.com/your-username/your-php-app.git
-    cd your-php-app
+    cd php-test
     ```
 
 2. Build and start the Docker containers:
@@ -40,125 +40,60 @@ This repository contains a PHP application that was given as a Assesment from KS
     docker-compose up --build
     ```
 
-## Accessing the API
+## API Documentation
 
-Once the containers are up and running, you can access the APIs using the following endpoints.
+    [Postman Api documentation, contains proper descriptions and Request-Response Sample](https://documenter.getpostman.com/view/33100685/2sA3kbexHG)
 
-### API Documentation
 
-#### List Recipes
+## Notes :
 
-- **URL:** `/recipes`
-- **Method:** `GET`
-- **Description:** Retrieve a list of recipes.
-- **Protected:** No
-- **Request:**
+1. Database tables are auto created upon docker build
 
-    ```http
-    GET /recipes HTTP/1.1
-    Host: localhost
-    ```
+2. 2 users with different roles are auto inserted into users table upon docker build
+to implement authentication and authorization
 
-- **Response:**
+3. Search api is not created separately, rather implemented in the List api along with      Pagination for Recipes
 
-    ```json
+4. No Freamework and Package is used. Though composer is set up.
 
-    ```
+5. Session based Authentication used.
 
-#### Create Recipe
 
-- **URL:** `/recipes`
-- **Method:** `POST`
-- **Description:** Create a new recipe.
-- **Protected:** Yes
-- **Request:**
+## Git History :
 
-    ```http
-    POST /recipes HTTP/1.1
-    Host: localhost
-    Content-Type: application/json
-    ```
 
-- **Response:**
 
-    ```json
+## Complettion of your Aspects (In your words):
 
-    ```
+- You **MUST** use packages, but you **MUST NOT** use a web-app framework or microframework. That is, you can use [symfony/dependency-injection](https://packagist.org/packages/symfony/dependency-injection) but not [symfony/symfony](https://packagist.org/packages/symfony/symfony).
+- Your application **MUST** run within the containers. Please provide short setup instructions.
+- The API **MUST** return valid JSON and **MUST** follow the endpoints set out above.
+- You **SHOULD** pay attention to best security practices.
+- You **SHOULD** follow SOLID principles where appropriate.
+- You do **NOT** have to build a UI for this API.
+- You **MUST** write testable code
 
-#### Get Recipe
+## Incompletion of your Aspects (In your words):
 
-- **URL:** `/recipes/{id}`
-- **Method:** `GET`
-- **Description:** Retrieve a specific recipe by ID.
-- **Protected:** No
-- **Request:**
+- demonstrate unit testing it (for clarity,  PHPUnit is not considered a framework as per the first point above. We encourage you to use PHPUnit or any other kind of **testing** framework).
 
-    ```http
-    GET /recipes/{id} HTTP/1.1
-    Host: localhost
-    ```
 
-- **Response:**
+## Completion of Bonus Points (In your words):
 
-    ```json
+- Setup with a one liner or a script
+- Content negotiation
+- Pagination
+- Following the industry standard style guide for the language you choose to use - `PSR-2` etc.
+- A git history (even if brief) with clear, concise commit messages.
 
-    ```
+## Incompletion of Bonus Points (In your words):
 
-#### Update Recipe
+- Using any kind of Database Access Abstraction
+- Other types of testing - e.g. integration tests
 
-- **URL:** `/recipes/{id}`
-- **Method:** `PUT` or `PATCH`
-- **Description:** Update an existing recipe by ID.
-- **Protected:** Yes
-- **Request:**
 
-    ```http
-    PUT /recipes/{id} HTTP/1.1
-    Host: localhost
-    Content-Type: application/json
-    ```
 
-- **Response:**
 
-    ```json
+## What I did not do :
 
-    ```
-
-#### Delete Recipe
-
-- **URL:** `/recipes/{id}`
-- **Method:** `DELETE`
-- **Description:** Delete a recipe by ID.
-- **Protected:** Yes
-- **Request:**
-
-    ```http
-    DELETE /recipes/{id} HTTP/1.1
-    Host: localhost
-    ```
-
-- **Response:**
-
-    ```json
-
-    ```
-
-#### Rate Recipe
-
-- **URL:** `/recipes/{id}/rating`
-- **Method:** `POST`
-- **Description:** Rate a specific recipe.
-- **Protected:** No
-- **Request:**
-
-    ```http
-    POST /recipes/{id}/rating HTTP/1.1
-    Host: localhost
-    Content-Type: application/json
-    ```
-
-- **Response:**
-
-    ```json
-    
-    ```
+1. Testing 

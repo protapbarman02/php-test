@@ -71,7 +71,6 @@ class RecipeController
     public function create()
     {
         $this->auth->loginRequired();
-        $this->auth->roleRequired(['admin']);
 
         $recipe = json_decode(file_get_contents('php://input'), true);
         $result = $this->recipeModel->create($recipe);
