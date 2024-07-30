@@ -56,6 +56,8 @@ to implement authentication and authorization
 
 6. Used Postman for Testing and Documentaion with Proper Description and Request-Response Sample.
 
+7. Postman collection is included for Testing.
+
 
 ## API Documentation
 
