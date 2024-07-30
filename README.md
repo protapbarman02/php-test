@@ -40,10 +40,6 @@ This repository contains a PHP application that was given as a Assesment from KS
     docker-compose up --build
     ```
 
-## API Documentation
-
-    [Postman Api documentation, contains proper descriptions and Request-Response Sample](https://documenter.getpostman.com/view/33100685/2sA3kbexHG)
-
 
 ## Notes :
 
@@ -57,6 +53,13 @@ to implement authentication and authorization
 4. No Freamework and Package is used. Though composer is set up.
 
 5. Session based Authentication used.
+
+6. Used Postman for Testing and Documentaion with Proper Description and Request-Response Sample.
+
+
+## API Documentation
+
+    [Postman Api documentation, contains proper descriptions and Request-Response Sample](https://documenter.getpostman.com/view/33100685/2sA3kbexHG)
 
 
 ## Git History :
