@@ -66,6 +66,56 @@ to implement authentication and authorization
 
 ## Git History :
 
+1. **Updated Documentation**
+   - *Author*: protapbarman02
+   - *Committed*: 3 minutes ago
+
+2. **Pagination on list recipes**
+   - *Author*: protapbarman02
+   - *Committed*: 12 hours ago
+
+3. **Authentication, authorization, authenticated routes**
+   - *Author*: protapbarman02
+   - *Committed*: 13 hours ago
+
+4. **Commits on Jul 29, 2024**
+   - **Solved seeding error. Combined rating data with recipe get APIs.**
+     - *Author*: protapbarman02
+     - *Committed*: 18 hours ago
+
+5. **Code standard update**
+   - *Author*: protapbarman02
+   - *Committed*: 2 days ago
+
+6. **Rating APIs, search recipe**
+   - *Author*: protapbarman02
+   - *Committed*: 2 days ago
+
+7. **Commits on Jul 28, 2024**
+   - **Create/update/getById/delete**
+     - *Author*: protapbarman02
+     - *Committed*: 2 days ago
+
+8. **List users and recipe API. Modification in ratings table**
+   - *Author*: protapbarman02
+   - *Committed*: 2 days ago
+
+9. **Automated tables creation and insertion in user table for authentication**
+   - *Author*: protapbarman02
+   - *Committed*: 2 days ago
+
+10. **DB-connection**
+    - *Author*: protapbarman02
+    - *Committed*: 2 days ago
+
+11. **Updated documentation**
+    - *Author*: protapbarman02
+    - *Committed*: 2 days ago
+
+12. **Initial**
+    - *Author*: protapbarman02
+    - *Committed*: 2 days ago
+
 
 
 ## Complettion of your Aspects (In your words):
@@ -95,10 +145,3 @@ to implement authentication and authorization
 
 - Using any kind of Database Access Abstraction
 - Other types of testing - e.g. integration tests
-
-
-
-
-## What I did not do :
-
-1. Testing 
