@@ -14,7 +14,7 @@ This repository contains a PHP application that was given as a Assesment from KS
 1. Clone the repository to your local machine:
 
     ```bash
-    git clone https://github.com/your-username/your-php-app.git
+    git clone https://github.com/protapbarman02/php-test.git
     cd php-test
     ```
 
@@ -48,7 +48,7 @@ This repository contains a PHP application that was given as a Assesment from KS
 2. 2 users with different roles are auto inserted into users table upon docker build
 to implement authentication and authorization
 
-3. Search api is not created separately, rather implemented in the List api along with      Pagination for Recipes
+3. Search api is not created separately, rather implemented in the List api along with Pagination for Recipes
 
 4. No Freamework and Package is used. Though composer is set up.
 
